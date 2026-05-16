@@ -13,58 +13,27 @@ export async function analyzeImage(
     image
   );
 
-  try {
+  const response =
+    await fetch(
 
-    const response =
-      await fetch(
+      `${API_URL}/analyze/single`,
 
-        `${API_URL}/analyze/single`,
-
-        {
-          method: "POST",
-
-          body: formData,
-        }
-      );
-
-    // HANDLE API ERRORS
-
-    if (!response.ok) {
-
-      let errorMessage =
-        "Analysis failed";
-
-      try {
-
-        const error =
-          await response.json();
-
-        errorMessage =
-          error.detail ||
-          errorMessage;
-
-      } catch {
-
-        errorMessage =
-          "Server error occurred";
+      {
+        method: "POST",
+        body: formData,
       }
-
-      throw new Error(
-        errorMessage
-      );
-    }
-
-    // RETURN RESULT
-
-    return await response.json();
-
-  } catch (error) {
-
-    console.error(
-      "API Error:",
-      error
     );
 
-    throw error;
+  if (!response.ok) {
+
+    const error =
+      await response.json();
+
+    throw new Error(
+      error.detail ||
+      "Analysis failed"
+    );
   }
+
+  return await response.json();
 }
