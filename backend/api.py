@@ -81,17 +81,15 @@ app.add_middleware(
 # DIRECTORIES
 # =========================================
 
-UPLOAD_DIR = Path(
-    "uploads"
-)
+BASE_DIR = Path(__file__).resolve().parent
+
+UPLOAD_DIR = BASE_DIR / "uploads"
 
 UPLOAD_DIR.mkdir(
     exist_ok=True
 )
 
-REPORTS_DIR = Path(
-    "sample_outputs"
-)
+REPORTS_DIR = BASE_DIR / "sample_outputs"
 
 REPORTS_DIR.mkdir(
     exist_ok=True

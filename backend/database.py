@@ -14,7 +14,7 @@ from sqlalchemy.orm import (
     sessionmaker,
 )
 
-DATABASE_URL = "sqlite:///reports.db"
+DATABASE_URL = "sqlite:///./reports.db"
 
 engine = create_engine(
     DATABASE_URL,
