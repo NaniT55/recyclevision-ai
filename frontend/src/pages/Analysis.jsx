@@ -31,36 +31,76 @@ export default function Analysis() {
   // ANALYZE IMAGE
 
   const handleAnalyze = async () => {
-    if (!image) {
-      setError("Please upload an image");
 
-      return;
-    }
+  if (!image) {
 
-    try {
-      setLoading(true);
+    setError(
+      "Please upload an image"
+    );
 
-      setError("");
+    return;
+  }
 
-      setResult(null);
+  try {
 
-      const response = await analyzeImage(image);
+    setLoading(true);
 
-      // SAVE REPORTS LOCALLY
+    setError("");
 
-      const existingReports = JSON.parse(localStorage.getItem("reports")) || [];
+    setResult(null);
 
-      existingReports.unshift(response);
+    // CALL API
 
-      localStorage.setItem("reports", JSON.stringify(existingReports));
-    } catch (err) {
-      console.error(err);
+    const response =
+      await analyzeImage(
+        image
+      );
 
-      setError(err.message || "Backend connection failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+    console.log(
+      "AI RESPONSE:",
+      response
+    );
+
+    // IMPORTANT FIX
+
+    setResult(response);
+
+    // SAVE REPORTS LOCALLY
+
+    const existingReports =
+      JSON.parse(
+        localStorage.getItem(
+          "reports"
+        )
+      ) || [];
+
+    existingReports.unshift(
+      response
+    );
+
+    localStorage.setItem(
+
+      "reports",
+
+      JSON.stringify(
+        existingReports
+      )
+    );
+
+  } catch (err) {
+
+    console.error(err);
+
+    setError(
+      err.message ||
+      "Backend connection failed"
+    );
+
+  } finally {
+
+    setLoading(false);
+  }
+};
 
   return (
     <div className="analysis-page">
