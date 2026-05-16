@@ -66,7 +66,8 @@ RecycleVision analyzes recycling bottle batches using AI and generates operation
 
 ## Analysis Dashboard
 
-![Analysis](./screenshots/AnalysisPage.png)
+![Analysis](./screenshots/AnalysisPage1.png)
+![Analysis](./screenshots/AnalysisPage2.png)
 
 ---
 
