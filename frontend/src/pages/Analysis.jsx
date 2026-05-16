@@ -46,7 +46,13 @@ export default function Analysis() {
 
       const response = await analyzeImage(image);
 
-      setResult(response);
+      // SAVE REPORTS LOCALLY
+
+      const existingReports = JSON.parse(localStorage.getItem("reports")) || [];
+
+      existingReports.unshift(response);
+
+      localStorage.setItem("reports", JSON.stringify(existingReports));
     } catch (err) {
       console.error(err);
 

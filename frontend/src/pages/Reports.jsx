@@ -10,25 +10,25 @@ export default function Reports() {
   const [loading, setLoading] =
     useState(true);
 
-  // FETCH REPORTS
+  // LOAD REPORTS FROM LOCAL STORAGE
 
-  const fetchReports = async () => {
+  useEffect(() => {
 
     try {
 
-      const response = await fetch(
-        "http://127.0.0.1:8000/reports"
-      );
+      const savedReports =
+        JSON.parse(
+          localStorage.getItem(
+            "reports"
+          )
+        ) || [];
 
-      const data =
-        await response.json();
-
-      setReports(data);
+      setReports(savedReports);
 
     } catch (error) {
 
       console.error(
-        "Failed to fetch reports",
+        "Failed to load reports",
         error
       );
 
@@ -36,25 +36,50 @@ export default function Reports() {
 
       setLoading(false);
     }
-  };
-
-  // LOAD REPORTS
-
-  useEffect(() => {
-
-    fetchReports();
 
   }, []);
 
   // DOWNLOAD REPORT
 
   const downloadReport = (
-    batchId
+    report
   ) => {
 
-    window.open(
-      `http://127.0.0.1:8000/reports/${batchId}`,
-      "_blank"
+    const blob = new Blob(
+
+      [
+        JSON.stringify(
+          report,
+          null,
+          2
+        ),
+      ],
+
+      {
+        type:
+        "application/json",
+      }
+    );
+
+    const url =
+      URL.createObjectURL(
+        blob
+      );
+
+    const a =
+      document.createElement(
+        "a"
+      );
+
+    a.href = url;
+
+    a.download =
+      `${report.batch_id}.json`;
+
+    a.click();
+
+    URL.revokeObjectURL(
+      url
     );
   };
 
@@ -91,7 +116,7 @@ export default function Reports() {
         </div>
       )}
 
-      {/* EMPTY */}
+      {/* EMPTY STATE */}
 
       {!loading &&
         reports.length === 0 && (
@@ -114,7 +139,7 @@ export default function Reports() {
         </div>
       )}
 
-      {/* REPORTS TABLE */}
+      {/* REPORT TABLE */}
 
       {!loading &&
         reports.length > 0 && (
@@ -126,10 +151,31 @@ export default function Reports() {
             <thead>
 
               <tr>
-                <th>Batch ID</th>
-                <th>Timestamp</th>
-                <th>Grade</th>
-                <th>Download</th>
+
+                <th>
+                  Batch ID
+                </th>
+
+                <th>
+                  Timestamp
+                </th>
+
+                <th>
+                  Grade
+                </th>
+
+                <th>
+                  Bottle Count
+                </th>
+
+                <th>
+                  PET %
+                </th>
+
+                <th>
+                  Download
+                </th>
+
               </tr>
 
             </thead>
@@ -139,45 +185,59 @@ export default function Reports() {
               {reports.map(
                 (report, index) => (
 
-                <tr key={index}>
+                  <tr key={index}>
 
-                  <td>
-                    {report.batch_id}
-                  </td>
+                    <td>
+                      {report.batch_id}
+                    </td>
 
-                  <td>
-                    {new Date(
-                      report.timestamp
-                    ).toLocaleString()}
-                  </td>
+                    <td>
 
-                  <td>
+                      {new Date(
+                        report.analysis_timestamp
+                      ).toLocaleString()}
 
-                    <div
-                      className={`grade-badge grade-${report.grade}`}
-                    >
-                      {report.grade}
-                    </div>
+                    </td>
 
-                  </td>
+                    <td>
 
-                  <td>
+                      <div
+                        className={`grade-badge grade-${report.batch_grade}`}
+                      >
 
-                    <button
-                      className="download-btn"
-                      onClick={() =>
-                        downloadReport(
-                          report.batch_id
-                        )
-                      }
-                    >
-                      Download
-                    </button>
+                        {report.batch_grade}
 
-                  </td>
+                      </div>
 
-                </tr>
-              ))}
+                    </td>
+
+                    <td>
+                      {report.bottle_count}
+                    </td>
+
+                    <td>
+                      {report.pet_percentage}%
+                    </td>
+
+                    <td>
+
+                      <button
+                        className="download-btn"
+
+                        onClick={() =>
+                          downloadReport(
+                            report
+                          )
+                        }
+                      >
+                        Download
+                      </button>
+
+                    </td>
+
+                  </tr>
+                )
+              )}
 
             </tbody>
 
@@ -199,17 +259,9 @@ export default function Reports() {
               {reports.length}
             </h2>
 
-            <p>Total Reports</p>
-
-          </div>
-
-          <div className="summary-card">
-
-            <h2>
-              Active
-            </h2>
-
-            <p>Backend Connected</p>
+            <p>
+              Total Reports
+            </p>
 
           </div>
 
@@ -219,7 +271,9 @@ export default function Reports() {
               AI
             </h2>
 
-            <p>Groq Vision Analysis</p>
+            <p>
+              Groq Vision Analysis
+            </p>
 
           </div>
 
@@ -229,7 +283,21 @@ export default function Reports() {
               JSON
             </h2>
 
-            <p>Structured Reports</p>
+            <p>
+              Structured Reports
+            </p>
+
+          </div>
+
+          <div className="summary-card">
+
+            <h2>
+              Local
+            </h2>
+
+            <p>
+              Browser Stored Reports
+            </p>
 
           </div>
 
